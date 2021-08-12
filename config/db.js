@@ -6,10 +6,11 @@ async function connect(){
     if(global.connection && global.connection.state !== 'disconnected'){
         return global.connection;
     }
+    
     try{
         const mysql = require("mysql2/promise");
         const connection = await mysql.createConnection(
-            `mysql://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:3306/${process.env.DB_NAME}`
+            `mysql://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`
         );
         console.log("MySQL connected!");
         global.connection = connection;

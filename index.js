@@ -1,5 +1,8 @@
 const express = require('express')
+const dotenv = require('dotenv-safe')
 const db = require('./config/db')
+
+dotenv.config()
 
 app = express()
 
@@ -8,9 +11,10 @@ app.use('/', require('./routes/users'))
 app.use('/', require('./routes/companies')) 
 app.use('/', require('./routes/auth')) 
 
-app.listen(4000, () => {
+const port = process.env.NODE_LOCAL_PORT || 3000
+app.listen(port, () => {
     db.createUserTable()
     db.createCompanyTable()
-    console.log('Server on! Port 4000')
+    console.log(`Server on! Port ${port}`)
 })
 
