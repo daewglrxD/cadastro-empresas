@@ -12,11 +12,13 @@ const getUsers = async (req, res, next) => {
             return
         }
         res.status(200).json(rows)
+        return
     } catch (e) {
         res.status(500).json({
             message: "Error on getting users",
             error: e.message
         })
+        return
     }
 }
 
@@ -34,14 +36,22 @@ const createUser = async (req, res, next) => {
         const query = 'INSERT INTO users(name, email, password) VALUES (?, ?, ?);'
         const values = [req.body.name, req.body.email, res.locals.hash]
         await connection.query(query, values)
+
+        const select = 'SELECT * FROM users WHERE email = ?'
+        const selectValues = req.body.email
+        const [rows] = await connection.query(select, selectValues)
+
         res.status(201).json({
-            message: "Created"
+            message: "Created",
+            rows: rows
         })
+        return
     } catch (e) {
         res.status(500).json({
             message: "Error on creation",
             error: e.message
         })
+        return
     }
 }
 

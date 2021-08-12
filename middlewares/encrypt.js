@@ -7,9 +7,18 @@ const encrypt = async (req, res, next) => {
             message: "Error on getting password",
             error: "Request: bad format"            
         })
+        return
     }
-    const hash = await passwordUtil.encrypt(password)
-    res.locals.hash = hash
+    try {
+        const hash = await passwordUtil.encrypt(password)
+        res.locals.hash = hash
+    } catch (e) {
+        res.json(500).json({
+            message: "Error on hashing",
+            error: e.message            
+        })
+        return
+    }
     next()
 }
 
