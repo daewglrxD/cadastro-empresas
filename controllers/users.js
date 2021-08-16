@@ -11,7 +11,10 @@ const getUsers = async (req, res, next) => {
             })
             return
         }
-        res.status(200).json(rows)
+        res.status(200).json({
+            message: "Found",
+            rows: rows
+        })
         return
     } catch (e) {
         res.status(500).json({
@@ -36,7 +39,6 @@ const createUser = async (req, res, next) => {
         const query = 'INSERT INTO users(name, email, password) VALUES (?, ?, ?);'
         const values = [req.body.name, req.body.email, res.locals.hash]
         await connection.query(query, values)
-
         const select = 'SELECT * FROM users WHERE email = ?'
         const selectValues = req.body.email
         const [rows] = await connection.query(select, selectValues)

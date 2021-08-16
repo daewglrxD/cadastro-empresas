@@ -32,7 +32,7 @@ const authUser = async (req, res, next) => {
                     }, 
                     process.env.SECRET || 'desafio-player-2',
                     {
-                        expiresIn: '5d',
+                        expiresIn: '30min',
                     }
                 )
                 res.status(200).json({

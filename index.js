@@ -12,9 +12,10 @@ app.use('/', require('./routes/companies'))
 app.use('/', require('./routes/auth')) 
 
 const port = process.env.NODE_LOCAL_PORT || 3000
-app.listen(port, () => {
+const server = app.listen(port, () => {
     db.createUserTable()
     db.createCompanyTable()
     console.log(`Server on! Port ${port}`)
 })
 
+module.exports = server

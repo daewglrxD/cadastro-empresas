@@ -12,27 +12,19 @@ services:
       MYSQL_PASSWORD: $MYSQL_PASSWORD
     ports:
       - "3306:3306"
-    container_name: $DB_HOST
-    volumes: 
-      - db-config:/etc/mysql
-      - db-data:/var/lib/mysql
-      - ./db/backup/files/:/data_backup/data
+    
   app:
     build:
       context: .
       dockerfile: ./Dockerfile
-    image: node-mysql-app
     env_file: ./.env
     ports:
       - "3000:3000"
     volumes: 
       - .:/app
-      - app/node_modules
+      - /app/node_modules
     depends_on:
       - mysqldb
     stdin_open: true
     tty: true
 
-volumes: 
-  db-config:
-  db-data:
