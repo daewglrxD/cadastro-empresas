@@ -7,7 +7,8 @@ const getUsers = async (req, res, next) => {
         const [rows] = await connection.query(query)
         if (rows.length === 0){
             res.status(404).json({
-                message: "Not found"
+                message: "Not found",
+                error: "Users not found"
             })
             return
         }

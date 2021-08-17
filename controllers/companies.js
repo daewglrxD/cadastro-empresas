@@ -8,11 +8,15 @@ const getCompanies = async (req, res, next) => {
         const [rows] = await connection.query(query)
         if (rows.length === 0){
             res.status(404).json({
-                message: "Not found"
+                message: "Not found",
+                error: "Companies not found"
             })
             return
         }
-        res.status(200).json(rows)
+        res.status(200).json({
+            message:"Found",
+            rows: rows
+        })
         return
     } catch (e) {
         res.status(500).json({
@@ -47,6 +51,7 @@ const createCompany = async (req, res, next) => {
             return
         }
 
+        const connection = await db.connect();
         const query = 'INSERT INTO company(cnpj, corporate_name, trading_name, city, state) VALUES (?, ?, ?, ?, ?);'
         const values = [fetchResponseJSON.cnpj, fetchResponseJSON.razao_social, fetchResponseJSON.nome_fantasia, fetchResponseJSON.municipio, fetchResponseJSON.uf]
         await connection.query(query, values)
@@ -71,7 +76,7 @@ const createCompany = async (req, res, next) => {
 
 const editCompany = async (req, res, next) => {
     try{
-        const {cnpj = null, corporateName, trading_name, municipio, uf} = req.body
+        const {cnpj = null} = req.params
         if (!cnpj) {
             res.status(400).json({
                 message: "Error on editing company",
@@ -93,6 +98,7 @@ const editCompany = async (req, res, next) => {
             return
         }
 
+        const connection = await db.connect();
         const query = 'UPDATE company SET corporate_name = ?, trading_name = ?, city = ?, state = ? WHERE cnpj = ?'
         const values = [fetchResponseJSON.razao_social, fetchResponseJSON.nome_fantasia, fetchResponseJSON.municipio, fetchResponseJSON.uf, fetchResponseJSON.cnpj]
         await connection.query(query, values)
@@ -118,7 +124,7 @@ const editCompany = async (req, res, next) => {
 
 const deleteCompany =  async(req, res, next) => {
     try {
-        const {cnpj = null} = req.body
+        const {cnpj = null} = req.params
         if (!cnpj) {
             res.status(400).json({
                 message: "Error on deleting company",
@@ -126,15 +132,24 @@ const deleteCompany =  async(req, res, next) => {
             })
             return
         }
-
+        
+        const connection = await db.connect();
+        const select = 'SELECT * FROM company WHERE cnpj = ?'
         const treatedCNPJ = cnpj.replace(/[^\d]+/g,'')
-        const query = 'DELETE FROM company WHERE cnpj = ?'
         const values = [treatedCNPJ]
+        const [rows] = await connection.query(select, values)
+        if (rows.length === 0){
+            res.status(404).json({
+                message: "Not found",
+                error: "Companies not found"
+            })
+            return
+        }
+
+        const query = 'DELETE FROM company WHERE cnpj = ?'
         await connection.query(query, values)
 
-        res.status(200).json({
-            message: "Deleted",
-        })
+        res.status(204).json()
         return
     } catch (e) {
         res.status(500).json({
