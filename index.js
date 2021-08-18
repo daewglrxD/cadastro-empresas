@@ -12,9 +12,9 @@ app.use('/', require('./routes/companies'))
 app.use('/', require('./routes/auth')) 
 
 const port = 3000
-const server = app.listen(port, () => {
-    db.createUserTable()
-    db.createCompanyTable()
+const server = app.listen(port, async () => {
+    await db.createUserTable()
+    await db.createCompanyTable()
     console.log(`Server on! Port ${port}`)
 })
 

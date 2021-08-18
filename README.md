@@ -314,6 +314,15 @@ or
 ```
     cnpj: "33.014.556/0001-96"
 ```
+##### Body
+~~~json
+{
+	"corporateName": "Empresa de Mateus LTDA",
+	"tradingName": "Mateus Empresa",
+	"city": "Ribeirão Preto",
+	"state": "SP"
+}
+~~~
 ##### Headers
 ```
     x-access-token: token
