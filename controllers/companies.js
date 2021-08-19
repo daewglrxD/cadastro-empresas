@@ -43,15 +43,16 @@ const createCompany = async (req, res, next) => {
         const treatedCNPJ = cnpj.replace(/[^\d]+/g,'')
         const brasilAPIEndpoint = `https://brasilapi.com.br/api/cnpj/v1/${treatedCNPJ}`
         const fetchResponse = await fetch(brasilAPIEndpoint)
-        const fetchResponseJSON = await fetchResponse.json()
-        
-        if (!fetchResponseJSON.cnpj) {
-            res.status(400).json({
+
+        if (fetchResponse && !fetchResponse.ok) {
+            res.status(404).json({
                 message: "Error on creating company",
                 error: "No such company registered in BrasilAPI"
             })
             return
         }
+        
+        const fetchResponseJSON = await fetchResponse.json()
 
         const connection = await db.connect();
         const query = 'INSERT INTO company(cnpj, corporate_name, trading_name, city, state) VALUES (?, ?, ?, ?, ?);'
@@ -96,9 +97,9 @@ const editCompany = async (req, res, next) => {
         const [selectResult] = await connection.query(select, selectValues)
 
         if (selectResult.length === 0) {
-            res.status(400).json({
-                message: "Error on editing company",
-                error: "No such company in database"
+            res.status(404).json({
+                message: "Not found",
+                error: "Company not found"
             })
             return
         }
@@ -144,7 +145,7 @@ const deleteCompany =  async(req, res, next) => {
         if (rows.length === 0){
             res.status(404).json({
                 message: "Not found",
-                error: "Companies not found"
+                error: "Company not found"
             })
             return
         }

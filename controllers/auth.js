@@ -33,7 +33,7 @@ const authUser = async (req, res, next) => {
                         }, 
                         process.env.SECRET || 'desafio-player-2',
                         {
-                            expiresIn: '30min',
+                            expiresIn: '1d',
                         }
                     )
                     res.status(200).json({
@@ -43,7 +43,7 @@ const authUser = async (req, res, next) => {
                     return
                 }
             } catch (e) {
-                res.status(400).json({
+                res.status(500).json({
                     message: "Error on checking",
                     error: e.message 
                 })
@@ -65,11 +65,6 @@ const authUser = async (req, res, next) => {
     }
 }
 
-const logoutUser = async (req, res, next) => {
-    res.json({ token: null });
-}
-
 module.exports = {
     authUser,
-    logoutUser
 }

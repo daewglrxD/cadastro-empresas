@@ -1,6 +1,5 @@
 # cadastro-empresas
-Um repo sobre cadastro de empresas através de usuários autenticados.
-Testado no Ubuntu 20.04.
+Um repo sobre cadastro de empresas através de usuários autenticados, por Mateus Vilasboas. Testado no Ubuntu 20.04.
 
 ## Dependências do projeto
 - Docker versão 20.10.8 ou superior
@@ -39,11 +38,14 @@ encontradas pelo CNPJ no seu próprio banco de dados. Para isso, inicialmente a 
 autenticá-lo no sistema, e e então receber um CNPJ para busca e inserção no banco de dados. É possível também editar as informações da empresa inserindo apenas o CNPJ (a aplicação busca os dados a serem editados na BrasilAPI)
 e excluí-la usando seu CNPJ.
 
+## Coleção do Insomnia
+Para rodar os endpoints da aplicação no Insomnia, basta importar a coleção no Insomnia com o arquivo `insomnia-collection.json` presente no repo.
+
 ## Endpoints da API
 
 ### Endpoints de autenticação:
 
-#### **`POST /login`:** esse endpoint permite o login no sistema.
+#### **`POST /login`:** esse endpoint permite o login no sistema. O token gerado expira em 1 dia.
 
 ##### body
 
@@ -57,6 +59,7 @@ e excluí-la usando seu CNPJ.
 - Status 200
 ~~~json
 {
+    "message": "Token generated",
     "token": "token"
 }
 ~~~
@@ -84,7 +87,13 @@ e excluí-la usando seu CNPJ.
     "error": "Error description." 
 }
 ~~~
-
+ou
+~~~json
+{
+    "message": "Error on authentication",
+    "error": "Error description."
+}
+~~~
 ### Endpoints de usuários:
 
 #### **`GET /users`:** esse endpoint lista usuários do sistema.
@@ -277,13 +286,6 @@ or
 ~~~json
 {
     "message": "Error on creating company",
-    "error": "No such company registered in BrasilAPI"
-}
-~~~
-or 
-~~~json
-{
-    "message": "Error on creating company",
     "error": "No CNPJ in request"
 }
 ~~~
@@ -299,6 +301,13 @@ or
 {
     "message": "Error on verifying user",
     "error": "Forbidden"
+}
+~~~
+- Status 404
+~~~json
+{
+    "message": "Error on creating company",
+    "error": "No such company registered in BrasilAPI"
 }
 ~~~
 - Status 500
@@ -335,22 +344,15 @@ or
     {
         "id": 1,
         "cnpj": "33014556000196",
-        "corporate_name": "LOJAS AMERICANAS S.A.",
-        "trading_name": "",
-        "city": "RIO DE JANEIRO",
-        "state": "RJ"
+        "corporate_name": "Empresa de Mateus LTDA",
+        "trading_name": "Mateus Empresa",
+        "city": "Ribeirão Preto",
+        "state": "SP"
     }
   ]
 }
 ~~~
 - Status 400
-~~~json
-{
-    "message": "Error on editing company",
-    "error": "No such company registered in BrasilAPI"
-}
-~~~
-or 
 ~~~json
 {
     "message": "Error on editing company",
@@ -369,6 +371,13 @@ or
 {
     "message": "Error on verifying user",
     "error": "Forbidden"
+}
+~~~
+- Status 404
+~~~json
+{
+    "message": "Not found",
+    "error": "Company not found"
 }
 ~~~
 - Status 500
@@ -415,7 +424,7 @@ or
 ~~~json
 {
     "message": "Not found",
-    "error": "Companies not found"
+    "error": "Company not found"
 }
 ~~~
 - Status 500
