@@ -13,6 +13,7 @@ services:
     ports:
       - "3306:3306"
     
+    
   app:
     build:
       context: .
@@ -25,6 +26,7 @@ services:
       - /app/node_modules
     depends_on:
       - mysqldb
+    command: ["./wait-for-it.sh", "-t", "300", "mysqldb:3306", "--", "npm", "start"]
     stdin_open: true
     tty: true
 

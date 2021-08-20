@@ -5,9 +5,12 @@ WORKDIR /app
 COPY package*.json ./
 
 RUN npm install
+RUN apk update && apk add bash
 
 COPY . .
 
+RUN ["chmod", "+x", "./wait-for-it.sh"]
+
 EXPOSE 3000
 
-CMD [ "npm", "start" ]
+CMD ["npm", "start"]

@@ -2,8 +2,6 @@ const dotenv = require('dotenv-safe')
 
 dotenv.config()
 
-const db = process.env.NODE_ENV === "test" ? "test_db" : process.env.DB_NAME;
-
 async function connect(){
     if(global.connection && global.connection.state !== 'disconnected'){
         return global.connection;
@@ -12,7 +10,7 @@ async function connect(){
     try{
         const mysql = require("mysql2/promise");
         const connection = await mysql.createConnection(
-            `mysql://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:3306/${db}`
+            `mysql://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:3306/${process.env.DB_NAME}`
         );
         console.log("MySQL connected!");
         global.connection = connection;
